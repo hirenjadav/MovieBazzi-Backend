@@ -28,23 +28,23 @@ router.delete("/admin", [auth, admin], (req, res) => {
 });
 
 // -----------------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------------
 //USER
 // -----------------------------------------------------------------------------------
 
 router.get("/me/getall", auth, async (req, res) => {
   try {
-    const review = await Review.find({ "user.id": req.user._id });
+    const review = await Review.find({ userID: req.user._id });
     res.send(review);
   } catch (error) {
     console.log(error);
   }
 });
 
+// -----------------------------------------------------------------------------------
+
 router.delete("/me/delete", auth, (req, res) => {
   try {
-    User.findByIdAndDelete(req.body.id, function (err, user) {
+    User.findByIdAndDelete(req.body.reviewID, function (err, user) {
       if (err) {
         console.log(err);
       } else {
@@ -95,6 +95,10 @@ router.put("/me/like", auth, async (req, res) => {
     });
 
     if (flag === 0) {
+      review.dislikeCount = review.dislikeCount.filter((i) => {
+        return i.userID !== req.user._id;
+      });
+
       review.likeCount.push({
         userID: req.user._id,
         userName: req.user.name,
@@ -124,6 +128,10 @@ router.put("/me/dislike", auth, async (req, res) => {
     });
 
     if (flag === 0) {
+      review.likeCount = review.likeCount.filter((i) => {
+        return i.userID !== req.user._id;
+      });
+
       review.dislikeCount.push({
         userID: req.user._id,
         userName: req.user.name,

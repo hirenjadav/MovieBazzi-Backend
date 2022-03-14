@@ -12,15 +12,15 @@ const router = express.Router();
 //ADMIN
 // -----------------------------------------------------------------------------------
 
-router.get("/", [auth, admin], async (req, res) => {
+router.get("/admin", [auth, admin], async (req, res) => {
   const user = await User.find();
   res.send(user);
 });
 
 // -----------------------------------------------------------------------------------
 
-router.delete("/", [auth, admin], (req, res) => {
-  User.findByIdAndDelete(req.body.id, function (err, user) {
+router.delete("/admin", [auth, admin], (req, res) => {
+  User.findByIdAndDelete(req.body.userID, function (err, user) {
     if (err) {
       console.log(err);
     } else {
@@ -77,6 +77,19 @@ function validateWishlist(t) {
 
   return schema.validate(t);
 }
+
+// -----------------------------------------------------------------------------------
+
+router.delete("/me/wishlist", auth, async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  user.wishlist = user.wishlist.filter((item) => {
+    return item._id !== req.body.id;
+  });
+
+  user.save();
+  res.send(user);
+});
 
 // -----------------------------------------------------------------------------------
 
