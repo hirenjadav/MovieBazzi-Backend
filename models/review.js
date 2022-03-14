@@ -31,16 +31,13 @@ const reviewSchema = new mongoose.Schema({
     required: true,
   },
   reportCount: {
-    type: Number,
-    default: 0,
+    type: [{ userID: String, userName: String, reason: String }],
   },
   likeCount: {
-    type: Number,
-    default: 0,
+    type: [{ userID: String, userName: String }],
   },
   dislikeCount: {
-    type: Number,
-    default: 0,
+    type: [{ userID: String, userName: String }],
   },
 });
 
@@ -54,9 +51,25 @@ function validateReview(review) {
     userName: Joi.string().required(),
     mediaType: Joi.string().required(),
     mediaID: Joi.string().required(),
-    reportCount: Joi.number(),
-    likeCount: Joi.number(),
-    dislikeCount: Joi.number(),
+    reportCount: Joi.array().items(
+      Joi.object().keys({
+        userID: Joi.string(),
+        userName: Joi.string(),
+        reason: Joi.string(),
+      })
+    ),
+    likeCount: Joi.array().items(
+      Joi.object().keys({
+        userID: Joi.string(),
+        userName: Joi.string(),
+      })
+    ),
+    dislikeCount: Joi.array().items(
+      Joi.object().keys({
+        userID: Joi.string(),
+        userName: Joi.string(),
+      })
+    ),
   });
   return schema.validate(review);
 }

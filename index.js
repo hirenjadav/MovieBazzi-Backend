@@ -1,3 +1,4 @@
+require("dotenv").config();
 // const config = require("config");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -13,7 +14,8 @@ const reviews = require("./routes/reviews");
 // -----------------------------------------------------------------------------------
 
 mongoose
-  .connect("mongodb://localhost:27017/sdp")
+  .connect(process.env.MONGODB_LINK + "sdp")
+  // .connect("mongodb://localhost:27017/sdp")
   .then(() => {
     console.log("Connected to Database......");
   })

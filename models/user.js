@@ -20,6 +20,12 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  wishlist: [
+    {
+      mediaType: String,
+      mediaID: String,
+    },
+  ],
 });
 
 userSchema.methods.generateAuthToken = function () {
@@ -42,6 +48,12 @@ function validateUser(user) {
     name: Joi.string().required(),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
+    whislist: Joi.array().items(
+      Joi.object().keys({
+        mediaType: Joi.string(),
+        mediaID: Joi.string(),
+      })
+    ),
   });
   return schema.validate(user);
 }

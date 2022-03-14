@@ -9,11 +9,74 @@ const admin = require("../middleware/admin");
 const router = express.Router();
 
 // -----------------------------------------------------------------------------------
+//ADMIN
+// -----------------------------------------------------------------------------------
+
+router.get("/", [auth, admin], async (req, res) => {
+  const user = await User.find();
+  res.send(user);
+});
+
+// -----------------------------------------------------------------------------------
+
+router.delete("/", [auth, admin], (req, res) => {
+  User.findByIdAndDelete(req.body.id, function (err, user) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(user);
+    }
+  });
+});
+
+// -----------------------------------------------------------------------------------
+//USER
+// -----------------------------------------------------------------------------------
 
 router.get("/me", auth, async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
   res.send(user);
 });
+
+// -----------------------------------------------------------------------------------
+
+router.put("/me/wishlist", auth, async (req, res) => {
+  let flag = 0;
+
+  const user = await User.findById(req.user._id);
+
+  const { error } = validateWishlist(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  user.wishlist.forEach((element) => {
+    if (
+      element.mediaID === req.body.mediaID &&
+      element.mediaType === req.body.mediaType
+    ) {
+      flag = 1;
+      return res.status(400).send("Already Added!!!!");
+    }
+  });
+
+  if (flag === 0) {
+    user.wishlist.push({
+      mediaType: req.body.mediaType,
+      mediaID: req.body.mediaID,
+    });
+
+    user.save();
+    res.send(user);
+  }
+});
+
+function validateWishlist(t) {
+  const schema = Joi.object().keys({
+    mediaType: Joi.string().required(),
+    mediaID: Joi.string().required(),
+  });
+
+  return schema.validate(t);
+}
 
 // -----------------------------------------------------------------------------------
 
@@ -31,9 +94,6 @@ router.post("/register", async (req, res) => {
 
   const token = user.generateAuthToken();
   res.send(token);
-  // .header("x-auth-token", token)
-  // .header("Access-Control-Allow-Headers", "x-auth-token")
-  // .send(_.pick(user, ["_id", "name", "email"]));
 });
 
 // -----------------------------------------------------------------------------------
@@ -61,23 +121,6 @@ function validateLogin(req) {
 
   return schema.validate(req);
 }
-
-// -----------------------------------------------------------------------------------
-
-router.get("/", [auth, admin], async (req, res) => {
-  const user = await User.find();
-  res.send(user);
-});
-
-router.delete("/", [auth, admin], (req, res) => {
-  User.findByIdAndDelete(req.body.id, function (err, user) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(user);
-    }
-  });
-});
 
 // -----------------------------------------------------------------------------------
 
