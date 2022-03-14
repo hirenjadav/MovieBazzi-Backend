@@ -36,7 +36,7 @@ userSchema.methods.generateAuthToken = function () {
       email: this.email,
       isAdmin: this.isAdmin,
     },
-    "jwtPrivateKey"
+    process.env.JWT_KEY
   );
   return token;
 };
