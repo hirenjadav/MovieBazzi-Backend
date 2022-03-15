@@ -2,7 +2,8 @@ require("dotenv").config();
 // const config = require("config");
 const express = require("express");
 const bodyParser = require("body-parser");
-// const helmet = require("helmet");
+const helmet = require("helmet");
+const compression = require("compression");
 const cors = require("cors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
@@ -10,7 +11,6 @@ const app = express();
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const users = require("./routes/users");
 const reviews = require("./routes/reviews");
-require("./middleware/production")(app);
 
 // -----------------------------------------------------------------------------------
 
@@ -30,7 +30,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-// app.use(helmet());
+app.use(helmet());
+app.use(compression());
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));
   console.log("Morgon Enabled.....");
