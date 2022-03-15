@@ -60,7 +60,6 @@ app.use("/api/reviews", reviews);
 
 // -----------------------------------------------------------------------------------
 
-const port = 8000 || process.env.PORT;
-app.listen(port, () => {
+app.listen(process.env.PORT || 8000, () => {
   console.log(`Server listening on port ${port}!`);
 });
