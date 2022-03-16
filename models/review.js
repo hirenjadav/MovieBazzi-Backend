@@ -47,8 +47,8 @@ function validateReview(review) {
   const schema = Joi.object().keys({
     rating: Joi.number().required().min(0).max(10),
     review: Joi.string().required().trim(),
-    userID: Joi.string().required(),
-    userName: Joi.string().required(),
+    userID: Joi.string(),
+    userName: Joi.string(),
     mediaType: Joi.string().required(),
     mediaID: Joi.string().required(),
     reportCount: Joi.array().items(
