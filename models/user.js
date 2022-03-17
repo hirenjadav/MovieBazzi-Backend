@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   wishlist: [
     {
       mediaType: String,
-      mediaID: String,
+      mediaID: Number,
     },
   ],
 });
@@ -51,7 +51,7 @@ function validateUser(user) {
     whislist: Joi.array().items(
       Joi.object().keys({
         mediaType: Joi.string(),
-        mediaID: Joi.string(),
+        mediaID: Joi.Number(),
       })
     ),
   });
