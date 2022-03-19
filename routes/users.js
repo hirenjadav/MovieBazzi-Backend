@@ -83,9 +83,15 @@ function validateWishlist(t) {
 router.delete("/me/wishlist", auth, async (req, res) => {
   const user = await User.findById(req.user._id);
 
-  user.wishlist = user.wishlist.filter((item) => {
-    return item._id !== req.body.id;
+  // user.wishlist = user.wishlist.filter((item) => {
+  //   return item._id !== req.body.id;
+  // });
+
+  const index = user.wishlist.findIndex((item) => {
+    return item._id === req.body.id;
   });
+
+  user.wishlist.splice(index, 1);
 
   user.save();
   res.send(user);
