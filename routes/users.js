@@ -72,7 +72,7 @@ router.put("/me/wishlist", auth, async (req, res) => {
 function validateWishlist(t) {
   const schema = Joi.object().keys({
     mediaType: Joi.string().required(),
-    mediaID: Joi.string().required(),
+    mediaID: Joi.numbar().required(),
   });
 
   return schema.validate(t);

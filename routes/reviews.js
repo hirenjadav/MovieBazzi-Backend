@@ -177,5 +177,19 @@ router.put("/me/report", auth, async (req, res) => {
 });
 
 // -----------------------------------------------------------------------------------
+//GENERAL
+// -----------------------------------------------------------------------------------
+
+router.get("/general", async (req, res) => {
+  try {
+    const review = await Review.find({
+      mediaType: req.body.mediaType,
+      mediaID: req.body.mediaType,
+    });
+    res.send(review);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 module.exports = router;
