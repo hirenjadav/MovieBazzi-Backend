@@ -51,7 +51,7 @@ function validateUser(user) {
     whislist: Joi.array().items(
       Joi.object().keys({
         mediaType: Joi.string(),
-        mediaID: Joi.Number(),
+        mediaID: Joi.number(),
       })
     ),
   });
