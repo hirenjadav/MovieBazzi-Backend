@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   wishlist: [
     {
       mediaType: String,
-      mediaID: Number,
+      mediaID: String,
     },
   ],
 });
