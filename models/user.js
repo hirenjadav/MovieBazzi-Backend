@@ -24,6 +24,8 @@ const userSchema = new mongoose.Schema({
     {
       mediaType: String,
       mediaID: String,
+      mediaName: String,
+      mediaPoster: String,
     },
   ],
 });
@@ -35,7 +37,6 @@ userSchema.methods.generateAuthToken = function () {
       name: this.name,
       email: this.email,
       isAdmin: this.isAdmin,
-      watchlist: this.watchlist,
     },
     process.env.JWT_KEY
   );
@@ -53,6 +54,8 @@ function validateUser(user) {
       Joi.object().keys({
         mediaType: Joi.string(),
         mediaID: Joi.string(),
+        mediaName: Joi.string().required(),
+        mediaPoster: Joi.string().required(),
       })
     ),
   });

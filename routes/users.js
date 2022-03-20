@@ -62,6 +62,8 @@ router.put("/me/watchlist", auth, async (req, res) => {
     user.watchlist.push({
       mediaType: req.body.mediaType,
       mediaID: req.body.mediaID,
+      mediaName: req.body.mediaName,
+      mediaPoster: req.body.mediaPoster,
     });
 
     user.save();
@@ -73,6 +75,8 @@ function validateWatchlist(t) {
   const schema = Joi.object().keys({
     mediaType: Joi.string().required(),
     mediaID: Joi.string().required(),
+    mediaName: Joi.string().required(),
+    mediaPoster: Joi.string().required(),
   });
 
   return schema.validate(t);
