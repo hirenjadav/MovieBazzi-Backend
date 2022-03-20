@@ -45,10 +45,10 @@ router.put("/me/watchlist", auth, async (req, res) => {
 
   const user = await User.findById(req.user._id);
 
-  const { error } = validateWishlist(req.body);
+  const { error } = validateWatchlist(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  user.wishlist.forEach((element) => {
+  user.watchlist.forEach((element) => {
     if (
       element.mediaID === req.body.mediaID &&
       element.mediaType === req.body.mediaType
@@ -59,7 +59,7 @@ router.put("/me/watchlist", auth, async (req, res) => {
   });
 
   if (flag === 0) {
-    user.wishlist.push({
+    user.watchlist.push({
       mediaType: req.body.mediaType,
       mediaID: req.body.mediaID,
     });
@@ -69,7 +69,7 @@ router.put("/me/watchlist", auth, async (req, res) => {
   }
 });
 
-function validateWishlist(t) {
+function validateWatchlist(t) {
   const schema = Joi.object().keys({
     mediaType: Joi.string().required(),
     mediaID: Joi.string().required(),
@@ -83,11 +83,11 @@ function validateWishlist(t) {
 router.delete("/me/watchlist", auth, async (req, res) => {
   const user = await User.findById(req.user._id);
 
-  const index = user.wishlist.findIndex((item) => {
+  const index = user.watchlist.findIndex((item) => {
     return item._id === req.body.id;
   });
 
-  user.wishlist.splice(index, 1);
+  user.watchlist.splice(index, 1);
 
   user.save();
   res.send(user);
