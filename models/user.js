@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  wishlist: [
+  watchlist: [
     {
       mediaType: String,
       mediaID: String,
@@ -35,6 +35,7 @@ userSchema.methods.generateAuthToken = function () {
       name: this.name,
       email: this.email,
       isAdmin: this.isAdmin,
+      watchlist: this.watchlist,
     },
     process.env.JWT_KEY
   );
@@ -48,7 +49,7 @@ function validateUser(user) {
     name: Joi.string().required(),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
-    whislist: Joi.array().items(
+    watchlist: Joi.array().items(
       Joi.object().keys({
         mediaType: Joi.string(),
         mediaID: Joi.string(),
