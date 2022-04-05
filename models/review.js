@@ -30,6 +30,14 @@ const reviewSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  mediaName: {
+    type: String,
+    required: true,
+  },
+  mediaPoster: {
+    type: String,
+    required: true,
+  },
   reportCount: {
     type: [{ userID: String, userName: String, reason: String }],
   },
@@ -51,6 +59,8 @@ function validateReview(review) {
     userName: Joi.string(),
     mediaType: Joi.string().required(),
     mediaID: Joi.string().required(),
+    mediaName: Joi.string().required(),
+    mediaPoster: Joi.string().required(),
     reportCount: Joi.array().items(
       Joi.object().keys({
         userID: Joi.string(),

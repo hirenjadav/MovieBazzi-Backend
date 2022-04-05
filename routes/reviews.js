@@ -11,21 +11,30 @@ const router = express.Router();
 // -----------------------------------------------------------------------------------
 
 router.get("/admin", [auth, admin], async (req, res) => {
-  const review = await Review.find();
-  res.send(review);
+  try {
+    const review = await Review.find();
+    res.send(review);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // -----------------------------------------------------------------------------------
 
 router.delete("/admin", [auth, admin], (req, res) => {
-  User.findByIdAndDelete(req.body.id, function (err, user) {
+  Review.findByIdAndDelete(req.body.reviewID, function (err, reviews) {
     if (err) {
       console.log(err);
     } else {
-      res.send(user);
+      res.send(reviews);
     }
   });
 });
+
+// router.delete("/admin", [auth, admin], async (req, res) => {
+//   const reviews = await Review.findByIdAndDelete({ _id: req.body.reviewID });
+//   res.send(reviews);
+// });
 
 // -----------------------------------------------------------------------------------
 //USER
@@ -42,9 +51,9 @@ router.get("/me/getall", auth, async (req, res) => {
 
 // -----------------------------------------------------------------------------------
 
-router.delete("/me/delete", auth, (req, res) => {
+router.delete("/me/delete", auth, async (req, res) => {
   try {
-    User.findByIdAndDelete(req.body.reviewID, function (err, user) {
+    await Review.findByIdAndDelete(req.body.reviewID, function (err, user) {
       if (err) {
         console.log(err);
       } else {
@@ -70,6 +79,8 @@ router.post("/me/give", auth, async (req, res) => {
       userName: req.user.name,
       mediaType: req.body.mediaType,
       mediaID: req.body.mediaID,
+      mediaName: req.body.mediaName,
+      mediaPoster: req.body.mediaPoster,
     });
 
     await review.save();
@@ -180,11 +191,11 @@ router.put("/me/report", auth, async (req, res) => {
 //GENERAL
 // -----------------------------------------------------------------------------------
 
-router.get("/general", async (req, res) => {
+router.post("/general", async (req, res) => {
   try {
     const review = await Review.find({
       mediaType: req.body.mediaType,
-      mediaID: req.body.mediaType,
+      mediaID: req.body.mediaID,
     });
     res.send(review);
   } catch (error) {

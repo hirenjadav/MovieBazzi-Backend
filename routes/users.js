@@ -3,6 +3,7 @@ const Joi = require("joi");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { User, validate } = require("../models/user");
+const { Review } = require("../models/review");
 const mongoose = require("mongoose");
 const express = require("express");
 const admin = require("../middleware/admin");
@@ -13,17 +14,18 @@ const router = express.Router();
 // -----------------------------------------------------------------------------------
 
 router.get("/admin", [auth, admin], async (req, res) => {
-  const user = await User.find();
-  res.send(user);
+  const users = await User.find({ isAdmin: false });
+  res.send(users);
 });
 
 // -----------------------------------------------------------------------------------
 
 router.delete("/admin", [auth, admin], (req, res) => {
-  User.findByIdAndDelete(req.body.userID, function (err, user) {
+  User.findByIdAndDelete(req.body.userID, async function (err, user) {
     if (err) {
       console.log(err);
     } else {
+      await Review.deleteMany({ userID: req.body.userID });
       res.send(user);
     }
   });
@@ -36,6 +38,30 @@ router.delete("/admin", [auth, admin], (req, res) => {
 router.get("/me", auth, async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
   res.send(user);
+});
+
+router.put("/me/changepassword", auth, async (req, res) => {
+  let user = await User.findById(req.user._id);
+
+  const validPassword = await bcrypt.compare(req.body.old, user.password);
+  if (!validPassword) return res.status(400).send("Invalid password.");
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(req.body.new, salt);
+  await user.save();
+
+  res.send(user);
+});
+
+router.delete("/me", auth, (req, res) => {
+  User.findByIdAndDelete(req.user._id, async function (err, user) {
+    if (err) {
+      console.log(err);
+    } else {
+      await Review.deleteMany({ userID: req.user._id });
+      res.send(user);
+    }
+  });
 });
 
 // -----------------------------------------------------------------------------------

@@ -1,5 +1,4 @@
 require("dotenv").config();
-// const config = require("config");
 const express = require("express");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
@@ -39,17 +38,6 @@ if (app.get("env") === "development") {
 
 // -----------------------------------------------------------------------------------
 
-// app.use(
-//   "/api",
-//   createProxyMiddleware({
-//     target: "http://localhost:3000/", //original url
-//     changeOrigin: true,
-//     //secure: false,
-//     onProxyRes: function (proxyRes, req, res) {
-//       proxyRes.headers["Access-Control-Allow-Origin"] = "*";
-//     },
-//   })
-// );
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
