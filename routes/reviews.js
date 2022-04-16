@@ -51,18 +51,14 @@ router.get("/me/getall", auth, async (req, res) => {
 
 // -----------------------------------------------------------------------------------
 
-router.delete("/me/delete", auth, async (req, res) => {
-  try {
-    await Review.findByIdAndDelete(req.body.reviewID, function (err, user) {
-      if (err) {
-        console.log(err);
-      } else {
-        res.send(user);
-      }
-    });
-  } catch (error) {
-    console.log(error);
-  }
+router.delete("/me/delete", auth, (req, res) => {
+  Review.findByIdAndDelete(req.body.reviewID, function (err, reviews) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(reviews);
+    }
+  });
 });
 
 // -----------------------------------------------------------------------------------
